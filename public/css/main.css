@@ -1,13 +1,21 @@
+/*MAIN*/
+
 body {
     font-family: Arial, sans-serif;
 }
 
 .navbar{
     margin: 0;
+    background-color: #f9f9ff;
+    border-bottom: 1px solid #ddd;
 }
 
 .navbar a {
     color: #000;
+}
+
+.navbar .active {
+    background-color: #eee;
 }
 
 .jumbotron {
@@ -20,11 +28,13 @@ h1 {
     letter-spacing: -4px;
 }
 
-.signup {
-    padding: 5px 35px;
+.btn {
+    padding: 5px 40px;
 }
 
-.glyphicon {
+/*INDEX*/
+
+.description .glyphicon {
     font-size: 5em;
 }
 
@@ -38,4 +48,24 @@ h1 {
 
 .glyphicon-cloud {
     color: #a2a8a7;
+}
+
+/*DASHBOARD*/
+
+.poll .btn {
+    width: 180px;
+}
+
+.btn-poll {
+    padding: 10px 15px;
+    font-size: 1.4em;
+}
+
+.options {
+    margin-top: 10px;
+}
+
+.btn-delete {
+    padding: 5px 15px;
+    margin-top: -5px;
 }
