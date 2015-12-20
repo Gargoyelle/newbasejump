@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<title>Vote Wars</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type='text/css' href="css/bootstrap/bootstrap.min.css">
+		<link href="css/main.css" rel="stylesheet" type="text/css">
+	</head>
+
+	<body>
+      <nav class='navbar'>
+            <div class="container-fluid">
+                <div class="navbar-header">
+                  <a class="navbar-brand" href="/">VoteWars</a>
+                    <ul class="nav navbar-nav navbar-left">
+                        <li><a href="/">Home</a></li>
+                    </ul> 
+                </div>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><p class='navbar-text'>Hello</p></li>
+                    <li><a href='/settings'><span class='glyphicon glyphicon-cog'></span></a></li>
+                    <li><a href="#">Logout</a></li>
+                </ul>
+              </div>
+        </nav>  
+        <div class='jumbotron text-center'>
+            <h1>Dashboard</h1>
+            <p>What would you like to do today?</p>
+            <button class='btn btn-success btn-large btn-poll'>New Poll</button>
+            <button class='btn btn-primary btn-large btn-poll'>My Polls</button>
+        </div>
+      <div class='container-fluid poll text-center'>
+          <div class='row'>
+              <form class='col-sm-8 col-sm-offset-2'>
+                  <h2>Make A New Poll</h2>
+                <div class="form-group">
+                    <label for="poll-name">Name your poll.</label>
+                    <input type="text" class="form-control" id="poll-name" placeholder="Jedi or Sith?">
+                </div>
+                <div class="form-group">
+                    <label for="options">Options</label>
+                    <input type="text" class="form-control" id="options" placeholder="Jedi">
+                    <input type="text" class="form-control" id="options2" placeholder="Sith">
+                    <button class="btn btn-default options">More Options</button>
+                </div>
+                <button type="submit" class="btn btn-default btn-success">Submit</button>
+              </form>
+          </div>
+      </div>
+	</body>
+
+</html>
