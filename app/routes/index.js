@@ -24,6 +24,19 @@ module.exports = function (app, passport){
 			}
 		});
 		
+	app.get('/dashboard', authenticatedOrNot, function(req,res) {
+		res.render(path + '/public/dashboard.ejs', {
+			user: req.user
+		});
+	});	
+	
+	app.get('/mypolls', authenticatedOrNot, function(req,res) {
+		res.render(path + '/public/mypolls.ejs', {
+			user: req.user
+		});
+	});	
+	
+	// LOCAL REGISTRATION
 	app.get('/signup', function(req, res){
 			res.render(path + '/public/signup.ejs', {message: req.flash('signupMessage')});
 		});
@@ -34,48 +47,49 @@ module.exports = function (app, passport){
 		failureFlash: true
 	}));
 	
-	app.get('/profile', authenticatedOrNot, function(req,res) {
-		res.render('/dashboard.ejs', {
-			user: req.user
-		});
-	});
-	
+	// FB REGISTRATION
 	app.get('/auth/facebook&output=embed', passport.authenticate('facebook', {scope: 'email'}));
 	
 	app.get('/auth/facebook/callback', 
 		passport.authenticate('facebook', {
-			successRedirect: 'dashboard',
+			successRedirect: '/dashboard',
 			failureRedirect: 'index'
 		}));
 		
+	//LOGIN
 	app.route('/login')
 		.get(function(req, res){
-			res.sendFile(path + '/public/login.ejs', {message: req.flash('loginMessage')});
+			res.render(path + '/public/login.ejs', {message: req.flash('loginMessage')});
 		});
 		
 		
-	app.post('/login',
-		passport.authenticate('local', {
-			successRedirect: 'dashboard',
-			failureRedirect: 'login'
-		})
-	);
+	app.post('/login', passport.authenticate('login', {
+		successRedirect: 'dashboard',
+		failureRedirect: 'login',
+		failureFlash: true
+	}));
 		
+		
+	//LOGOUT
 	app.route('/logout')
 		.get(function(req, res){
 			req.logout();
-			res.redirect('index');
+			res.redirect('/');
 		})
 	
-	app.get('/auth/facebook', passport.authenticate('facebook', {scope: 'email'}));
+	//SETTINGS
+	app.get('/settings', authenticatedOrNot, function(req,res) {
+		res.render(path + '/public/settings.ejs', {
+			user: req.user,
+			message: req.flash('settingsMessage')
+		});
+	});	
 	
-	app.get('auth/facebook/callback',
-		passport.authenticate('facebook', {failureRedirect: '/login'}),
-		function(req,res){
-			res.render('loggedin', {user: req.user});
-		}
-	);
-	
+	app.post('/settings', passport.authenticate('settings', {
+		successRedirect: 'dashboard',
+		failureRedirect: 'settings',
+		failureFlash: true
+	}));
 	
 	
 	// app.route('/api/clicks')

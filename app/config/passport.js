@@ -18,6 +18,8 @@ module.exports = function (passport) {
 		});
 	});
 	
+	
+	//FACEBOOK
 	passport.use(new FacebookStrategy({
 		clientID: configAuth.facebookAuth.clientID,
 		clientSecret: configAuth.facebookAuth.clientSecret,
@@ -29,13 +31,13 @@ module.exports = function (passport) {
 	function(req, accessToken, refreshToken, profile, done) {
 		process.nextTick(function() {
 			User.findOne({'facebook.id': profile.id}, function(err, user){
-				if (err) {
+				if (err) 
 					return done(err);
-				}
 				
-				if (user) {
+				if (user) 
 					return done(null, user);
-				} else {
+					
+				else 
 					
 					var newUser = new User();
 					
@@ -49,11 +51,12 @@ module.exports = function (passport) {
 							throw err;
 						return done(null, newUser);
 					});
-				}
 			});
 		});
 	}));
 	
+	
+	//REGISTRATION
 	passport.use('signup', new LocalStrategy({
 		passReqToCallback: true
 	},
@@ -61,13 +64,13 @@ module.exports = function (passport) {
 		
 		process.nextTick(function() {
 			User.findOne({'local.username': username}, function (err, user){
-				if (err) {
-					console.log(err);
+				if (err) 
 					return done(err);
-				} else if (user) {
-					return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
-				} else {
 					
+				else if (user) 
+					return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
+
+				else 
 					var newUser = new User();
 					
 					newUser.local.username = username;
@@ -80,87 +83,59 @@ module.exports = function (passport) {
 						return done(null, newUser);
 					});
 					
-				}
 			});
 		});
-	}
-	));
-};
+	}));
 	
-// 	passport.use(new FacebookStrategy({
-// 		clientID: configAuth.facebookAuth.clientID,
-// 		clientSecret: configAuth.facebookAuth.clientSecret,
-// 		callbackURL: configAuth.facebookAuth.callbackURL
+	
+	//LOGIN
+	passport.use('login', new LocalStrategy({
+		passReqToCallback: true
+	},
+	function(req, username, password, done) {
 		
-// 		},
-// 		function(accessToken, refreshToken, profile, done) {
-// 			FbUsers.findOne({fbid: profile.id}, function (err, oldUser){
-// 				if (err) throw err;
-// 				if (oldUser){
-// 					done(null, oldUser);
-// 				} else {
-// 					var newUser = new FbUsers({
-// 						fbId: profile.id,
-// 						email: profile.emails[0].value,
-// 						name: profile.displayName
-// 					}).save(function(err, newUser){
-// 						if (err) throw err;
-// 						done(null, newUser);
-// 					})
-// 				}
-// 			})
-// 		}
-// 	))
+		User.findOne({'local.username' : username}, function(err, user) {
+			if (err)
+				return done(err);
+			
+			if (!user)
+				return done(null, false, req.flash('loginMessage', 'Username not found.'));
+				
+			if(!user.validPassword(password))
+				return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
+				
+			return done(null, user);
+		});
+	}));
 	
 	
+	//CHANGE PASSWORD
+	passport.use('settings', new LocalStrategy({
+		usernameField: 'password',
+		passwordField: 'newpassword',
+		passReqToCallback: true
+	},
 	
-// 	function userExist(req, res, next){
-// 		User.count({
-// 			username: req.body.username
-// 		}, function (err, count){
-// 			if (count === 0) {
-// 				next();
-// 			} else {
-// 				res.redirect('/signup');
-// 			}
-// 		});
-// 	}
-// }
-// module.exports = function (passport) {
-// 	
-
-// 	passport.use(new GitHubStrategy({
-// 		clientID: configAuth.githubAuth.clientID,
-// 		clientSecret: configAuth.githubAuth.clientSecret,
-// 		callbackURL: configAuth.githubAuth.callbackURL
-// 	},
-// 	function (token, refreshToken, profile, done) {
-// 		process.nextTick(function () {
-// 			User.findOne({ 'github.id': profile.id }, function (err, user) {
-// 				if (err) {
-// 					return done(err);
-// 				}
-
-// 				if (user) {
-// 					return done(null, user);
-// 				} else {
-// 					var newUser = new User();
-
-// 					newUser.github.id = profile.id;
-// 					newUser.github.username = profile.username;
-// 					newUser.github.displayName = profile.displayName;
-// 					newUser.github.publicRepos = profile._json.public_repos;
-// 					newUser.nbrClicks.clicks = 0;
-
-// 					newUser.save(function (err) {
-// 						if (err) {
-// 							throw err;
-// 						}
-
-// 						return done(null, newUser);
-// 					});
-// 				}
-// 			});
-// 		});
-// 	}));
-// };
+	function(req, password, newpassword, done) {
+		
+		process.nextTick(function() {
+		
+		
+		User.findOne({'local.username': req.user.local.username}, function(err, user){
+			if (err)
+				return done(err);
+		
+			if (!user.validPassword(password))
+				return done(null, false, req.flash('settingsMessage', 'Wrong password!'));
+			
+			else 
+				user.local.password = user.generateHash(newpassword);
+				user.save(function(err){
+						if (err)
+							throw err;
+						return done(null, user);
+				});
+				
+		})});
+	}));
+};

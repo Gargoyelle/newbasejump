@@ -4,7 +4,7 @@
 
 	<head>
 		<title>Vote Wars</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" type='text/css' href="css/bootstrap/bootstrap.min.css">
 		<link href="css/main.css" rel="stylesheet" type="text/css">
 	</head>
@@ -19,21 +19,27 @@
                     </ul> 
                 </div>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><p class='navbar-text'>Hello<span id='username'></span></p></li>
+                    <li><p class='navbar-text'>Hello 
+                        <% if (user.local.username) { %>
+                            <%=user.local.username%>
+                        <% } else { %>
+                            <%=user.facebook.name%>
+                        <% } %></p>
+                    </li>
                     <li><a href='/settings'><span class='glyphicon glyphicon-cog'></span></a></li>
-                    <li><a href="#">Logout</a></li>
+                    <li><a href="/logout">Logout</a></li>
                 </ul>
               </div>
         </nav>  
         <div class='jumbotron text-center'>
             <h1>Dashboard</h1>
             <p>What would you like to do today?</p>
-            <button class='btn btn-success btn-large btn-poll'>New Poll</button>
-            <button class='btn btn-primary btn-large btn-poll'>My Polls</button>
+            <a href='/dashboard' class='btn btn-success btn-large btn-poll'>New Poll</a>
+            <a href='/mypolls' class='btn btn-primary btn-large btn-poll'>My Polls</a>
         </div>
       <div class='container-fluid poll text-center'>
           <div class='row'>
-              <form class='col-sm-8 col-sm-offset-2'>
+              <form method='post' action='newpoll' class='col-sm-8 col-sm-offset-2'>
                   <h2>Make A New Poll</h2>
                 <div class="form-group">
                     <label for="poll-name">Name your poll.</label>
