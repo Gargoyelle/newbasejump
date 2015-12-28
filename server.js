@@ -26,7 +26,8 @@ app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true}));
 app.set('public', process.cwd() + '/public');
 app.set('view engine', 'ejs');
-// app.use('/controllers', express.static(process.cwd() + '/app/controllers'));
+app.use('/controllers', express.static(process.cwd() + '/app/controllers'));
+app.locals.url = process.env.APP_URL;
 
 app.use(session({
     secret: 'secretClementine',

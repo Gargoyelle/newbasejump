@@ -3,6 +3,7 @@
 var path = process.cwd();
 
 var User = require("../models/users");
+var PollHandler = require(path + '/app/controllers/pollHandler.server.js');
 
 module.exports = function (app, passport){
 	
@@ -15,6 +16,8 @@ module.exports = function (app, passport){
 		}
 	}
 	
+	var pollHandler = new PollHandler();
+	
 	app.route('/')
 		.get(function (req, res){
 			if (req.isAuthenticated()){
@@ -24,12 +27,27 @@ module.exports = function (app, passport){
 			}
 		});
 		
+	
+	//DASHBOARD
 	app.get('/dashboard', authenticatedOrNot, function(req,res) {
 		res.render(path + '/public/dashboard.ejs', {
 			user: req.user
 		});
 	});	
 	
+	app.route('/newpoll')
+		.post(authenticatedOrNot, pollHandler.addPoll);
+	
+	
+	app.get('/pollcreated', authenticatedOrNot, function(req,res) {
+		res.render(path + '/public/pollcreated.ejs', {
+			user: req.user,
+			url: req.app.locals.url,
+			pollname: '/' + req.user.polls[req.user.polls.length -1].pollUrl
+		});
+	});	
+	
+	//MY POLLS
 	app.get('/mypolls', authenticatedOrNot, function(req,res) {
 		res.render(path + '/public/mypolls.ejs', {
 			user: req.user

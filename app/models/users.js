@@ -8,15 +8,14 @@ var userSchema = new mongoose.Schema({
 		username	: String,
 		email		: String,
 		password	: String,
-		polls		: []
 	},
 	facebook: {
 		id		: String,
 		token	: String,
 		email	: String,
 		name	: String,
-		polls	: []
-	}
+	},
+	polls: []
 });
 
 userSchema.methods.generateHash = function(password){

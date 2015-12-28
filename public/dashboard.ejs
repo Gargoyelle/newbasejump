@@ -42,19 +42,19 @@
               <form method='post' action='newpoll' class='col-sm-8 col-sm-offset-2'>
                   <h2>Make A New Poll</h2>
                 <div class="form-group">
-                    <label for="poll-name">Name your poll.</label>
-                    <input type="text" class="form-control" id="poll-name" placeholder="Jedi or Sith?">
+                    <label for="pollname">Name your poll.</label>
+                    <input type="text" class="form-control" name="pollname" placeholder="Jedi or Sith?">
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="options-list">
                     <label for="options">Options</label>
-                    <input type="text" class="form-control" id="options" placeholder="Jedi">
-                    <input type="text" class="form-control" id="options2" placeholder="Sith">
-                    <button class="btn btn-default options">More Options</button>
+                    <input type="text" class="form-control" name="options" placeholder="Jedi">
+                    <input type="text" class="form-control" name="options" placeholder="Sith">
                 </div>
+                <div class="btn btn-default" id="options-more">More Options</div>
                 <button type="submit" class="btn btn-default btn-success">Submit</button>
               </form>
           </div>
       </div>
+      <script type="text/javascript" src="/controllers/pollController.client.js"></script>
 	</body>
-
 </html>

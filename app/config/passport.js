@@ -120,7 +120,8 @@ module.exports = function (passport) {
 		
 		process.nextTick(function() {
 		
-		
+		if (!req.user.local.username)
+			return done(null, false, req.flash('settingsMessage', "Facebook login doesn't require a password!"))
 		User.findOne({'local.username': req.user.local.username}, function(err, user){
 			if (err)
 				return done(err);
