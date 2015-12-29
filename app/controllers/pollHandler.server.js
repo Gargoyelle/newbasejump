@@ -4,17 +4,22 @@
 var Users = require('../models/users.js');
 
 function pollHandler () {
-    this.addPoll = function(req, res) {
-        var user;
+    
+    function getUsername(req) {
         if (req.user.local.username)
-            user = {'local.username': req.user.local.username};
+            return {'local.username': req.user.local.username};
             
         else
-            user = {'facebook.id': req.user.facebook.id};
-            
+            return {'facebook.id': req.user.facebook.id};
+    }
+    
+    this.addPoll = function(req, res) {
+        var user = getUsername(req);
         var options = req.body.options.filter(function(value) {
             return value !== '';
-        })
+        }).map(function(value) {
+            return {option: value, votes: 0}
+        });
         var pollUrl = req.body.pollname.replace(/\s/g, '%20');
         var newPoll = {
             pollName: req.body.pollname,
@@ -26,10 +31,19 @@ function pollHandler () {
             .exec(function(err, result) {
             if (err)
                 throw err;
-            console.log(result);
             res.redirect('/pollcreated');
             });
             
+    };
+    this.deletePoll = function(req, res) {
+        var user = getUsername(req);
+        var pollToDelete = req.body.pollToDelete;
+        Users.findOneAndUpdate(user, {$pull: {'polls': {pollName: pollToDelete}}})
+            .exec(function(err, result) {
+                if (err)
+                    throw err;
+                res.redirect('/mypolls');
+            })
     }
 }
 

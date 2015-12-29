@@ -50,9 +50,13 @@ module.exports = function (app, passport){
 	//MY POLLS
 	app.get('/mypolls', authenticatedOrNot, function(req,res) {
 		res.render(path + '/public/mypolls.ejs', {
-			user: req.user
+			user: req.user,
+			url: req.app.locals.url
 		});
 	});	
+	
+	app.route('/deletepoll')
+		.post(authenticatedOrNot, pollHandler.deletePoll);
 	
 	// LOCAL REGISTRATION
 	app.get('/signup', function(req, res){
@@ -109,9 +113,4 @@ module.exports = function (app, passport){
 		failureFlash: true
 	}));
 	
-	
-	// app.route('/api/clicks')
-	// 	.get(clickHandler.getClicks)
-	// 	.post(clickHandler.addClick)
-	// 	.delete(clickHandler.resetClicks);
 };

@@ -39,10 +39,11 @@
         </div>
       <div class='container-fluid'>
           <ul class='mypolls list-group'>
-            <li class='list-group-item'>Jedi or Sith?<button class='btn btn-danger pull-right btn-delete'>Delete</button></li>
-            <li class='list-group-item'>Anakin or Luke?<button class='btn btn-danger pull-right btn-delete'>Delete</button></li>
+              <% user.polls.forEach(function(poll) { %>
+                  <li class='list-group-item'><a href='<%=url + (user.local.username?user.local.username:user.facebook.name) + '/' + poll.pollUrl %>'><%=poll.pollName%></a><button class='btn btn-danger pull-right btn-delete'>Delete</button></li>
+              <% }); %>
           </ul>
-      </div>
+        </div>
+        <script type="text/javascript" src="controllers/deleteController.client.js"></script>
 	</body>
-
 </html>
