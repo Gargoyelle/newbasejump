@@ -1,7 +1,7 @@
 'use strict';
 
 
-var Users = require('../models/users.js');
+var User = require('../models/users.js');
 
 function pollHandler () {
     
@@ -27,7 +27,7 @@ function pollHandler () {
             options: options
         };
         req.app.locals.pollname = req.body.pollname;
-        Users.findOneAndUpdate(user, {$push: {'polls': newPoll} }, {upsert: true})
+        User.findOneAndUpdate(user, {$push: {'polls': newPoll} }, {upsert: true})
             .exec(function(err, result) {
             if (err)
                 throw err;
@@ -38,13 +38,14 @@ function pollHandler () {
     this.deletePoll = function(req, res) {
         var user = getUsername(req);
         var pollToDelete = req.body.pollToDelete;
-        Users.findOneAndUpdate(user, {$pull: {'polls': {pollName: pollToDelete}}})
+        User.findOneAndUpdate(user, {$pull: {'polls': {pollName: pollToDelete}}})
             .exec(function(err, result) {
                 if (err)
                     throw err;
                 res.redirect('/mypolls');
             })
     }
+    
 }
 
 module.exports = pollHandler;

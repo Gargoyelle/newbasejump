@@ -16,6 +16,28 @@ module.exports = function (app, passport){
 		}
 	}
 	
+	function getOptions(req, res, next) {
+		var user = req.params.user;
+        var poll = req.params.pollname;
+        User.findOne({'local.username': user}, function(err, user) {
+            if (err)
+                throw err;
+            var polls = user.polls;
+            var regex = /\W/gi;
+            for (var i = 0; i < polls.length; i++) {
+                var pollName = polls[i].pollName.replace(regex, '');
+                poll = poll.replace(regex, '');
+                if (pollName === poll) {
+                    req.options = polls[i].options;
+                    return next();
+                }
+            }
+            req.options = null;
+            return next();
+        })
+	}
+	
+	
 	var pollHandler = new PollHandler();
 	
 	app.route('/')
@@ -57,6 +79,19 @@ module.exports = function (app, passport){
 	
 	app.route('/deletepoll')
 		.post(authenticatedOrNot, pollHandler.deletePoll);
+		
+	
+	//POLLS
+	
+	app.get('/:user/:pollname', getOptions, function(req, res) {
+		res.render(path + '/public/pollpage.ejs', {
+			user: req.user,
+			userPoll: req.params.user,
+			pollName: req.params.pollname,
+			pollOptions: req.options
+		})
+	})
+	
 	
 	// LOCAL REGISTRATION
 	app.get('/signup', function(req, res){

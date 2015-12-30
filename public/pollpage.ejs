@@ -5,8 +5,8 @@
 	<head>
 		<title>Vote Wars</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" type='text/css' href="css/bootstrap/bootstrap.min.css">
-		<link href="css/main.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" type='text/css' href="../css/bootstrap/bootstrap.min.css">
+		<link href="../css/main.css" rel="stylesheet" type="text/css">
 	</head>
 
 	<body>
@@ -22,12 +22,21 @@
                     <li><p class='navbar-text'>Hello 
                         <% if (user.local.username) { %>
                             <%=user.local.username%>
-                        <% } else { %>
+                        <% } else if (user.facebook.name){ %>
                             <%=user.facebook.name%>
-                        <% } %></p>
+                        <% } else { %>
+                            stranger</p>
+                        <% }%>
                     </li>
                     <li><a href='/settings'><span class='glyphicon glyphicon-cog'></span></a></li>
-                    <li><a href="/logout">Logout</a></li>
+                    <li>
+                        <% if (user) { %>
+                        <a href="/logout">Logout</a>
+                        <% } else { %>
+                        <a href="/login">Login</a>
+                        <% } %>
+                        </li>
+                        
                 </ul>
               </div>
         </nav>  
@@ -37,18 +46,26 @@
             <a href='/dashboard' class='btn btn-success btn-large btn-poll'>New Poll</a>
             <a href='/mypolls' class='btn btn-primary btn-large btn-poll'>My Polls</a>
         </div>
-      <div class='container-fluid poll text-center'>
+      <div class='container-fluid poll'>
           <div class='row'>
-              <h1><% user.local.polls.pollname%></h1>
-              <p>by <% user.local.username %></p>
-              <form method='post' action='vote' class='col-sm-8 col-sm-offset-2'>
-                  <div class="form-group">
-                    <input type="radio" class="form-control" name="polloption">
-                    <br>
-                    <input type="radio" class="form-control" name="polloption">
+              <div class='col-md-4 col-md-offset-2'>
+                  <h1 class='text-center pollname'><%= pollName%></h1>
+                  <h4 class='text-center'>by <%= userPoll %></h4>
                 </div>
-                <button type="submit" class="btn btn-default btn-success">Vote</button>
-              </form>
+                <div class='col-md-4'>
+                  <form method='post' action='vote' class='col-sm-8 col-sm-offset-2'>
+                      <div class="form-group">
+                        <% for (var i = 0; i < pollOptions.length; i++) {%>
+                        <div class='radio'>
+                            <label>
+                                <input type="radio" name="option" value="<%= pollOptions[i].option %>"><%= pollOptions[i].option %>
+                            </label>
+                        </div>
+                        <% } %>
+                    </div>
+                    <button type="submit" class="btn btn-default btn-success">Vote</button>
+                  </form>
+              </div>
           </div>
       </div>
 	</body>
