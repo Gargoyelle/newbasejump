@@ -39,8 +39,8 @@
         </div>
       <div class='container-fluid'>
           <ul class='mypolls list-group'>
-              <% user.polls.forEach(function(poll) { %>
-                  <li class='list-group-item'><a href='<%=url + (user.local.username?user.local.username:user.facebook.name) + '/' + poll.pollUrl %>'><%=poll.pollName%></a><button class='btn btn-danger pull-right btn-delete'>Delete</button></li>
+              <% polls.forEach(function(poll) { %>
+                  <li class='list-group-item'><a href='<%=url + (user.local.username?user.local.username:user.facebook.name) + '/' + poll.url %>'><%=poll.name%></a><button data-id='<%=poll._id%>' class='btn btn-danger pull-right btn-delete'>Delete</button></li>
               <% }); %>
           </ul>
         </div>

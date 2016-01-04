@@ -3,6 +3,7 @@
 var path = process.cwd();
 
 var User = require("../models/users");
+var Poll = require('../models/polls');
 var PollHandler = require(path + '/app/controllers/pollHandler.server.js');
 
 module.exports = function (app, passport){
@@ -16,23 +17,22 @@ module.exports = function (app, passport){
 		}
 	}
 	
-	function getOptions(req, res, next) {
+	function findPolls(req, res, next) {
+		Poll.find({'user': req.user._id}, function (err, polls) {
+			if (err)
+				throw err;
+			req.polls = polls;
+			return next();
+		})
+	}
+	
+	function getPoll(req, res, next) {
 		var user = req.params.user;
         var poll = req.params.pollname;
-        User.findOne({'local.username': user}, function(err, user) {
+        Poll.findOne({'url': poll}, function(err, poll) {
             if (err)
                 throw err;
-            var polls = user.polls;
-            var regex = /\W/gi;
-            for (var i = 0; i < polls.length; i++) {
-                var pollName = polls[i].pollName.replace(regex, '');
-                poll = poll.replace(regex, '');
-                if (pollName === poll) {
-                    req.options = polls[i].options;
-                    return next();
-                }
-            }
-            req.options = null;
+            req.poll = poll;
             return next();
         })
 	}
@@ -43,7 +43,10 @@ module.exports = function (app, passport){
 	app.route('/')
 		.get(function (req, res){
 			if (req.isAuthenticated()){
-				res.render(path + '/public/dashboard.ejs', {user: req.user});
+				res.render(path + '/public/dashboard.ejs', {
+					user: req.user,
+					message: req.flash('createdMessage')
+				});
 			} else {
 				res.render(path + '/public/index.ejs');
 			}
@@ -53,7 +56,8 @@ module.exports = function (app, passport){
 	//DASHBOARD
 	app.get('/dashboard', authenticatedOrNot, function(req,res) {
 		res.render(path + '/public/dashboard.ejs', {
-			user: req.user
+			user: req.user,
+			message: req.flash('createdMessage')
 		});
 	});	
 	
@@ -61,18 +65,11 @@ module.exports = function (app, passport){
 		.post(authenticatedOrNot, pollHandler.addPoll);
 	
 	
-	app.get('/pollcreated', authenticatedOrNot, function(req,res) {
-		res.render(path + '/public/pollcreated.ejs', {
-			user: req.user,
-			url: req.app.locals.url,
-			pollname: '/' + req.user.polls[req.user.polls.length -1].pollUrl
-		});
-	});	
-	
 	//MY POLLS
-	app.get('/mypolls', authenticatedOrNot, function(req,res) {
+	app.get('/mypolls', authenticatedOrNot, findPolls, function(req, res) {
 		res.render(path + '/public/mypolls.ejs', {
 			user: req.user,
+			polls: req.polls,
 			url: req.app.locals.url
 		});
 	});	
@@ -83,15 +80,16 @@ module.exports = function (app, passport){
 	
 	//POLLS
 	
-	app.get('/:user/:pollname', getOptions, function(req, res) {
+	app.get('/:user/:pollname', getPoll, function(req, res) {
 		res.render(path + '/public/pollpage.ejs', {
 			user: req.user,
-			userPoll: req.params.user,
-			pollName: req.params.pollname,
-			pollOptions: req.options
+			pollUser: req.params.user,
+			poll: req.poll
 		})
 	})
 	
+	app.route('/:user/vote')
+		.post(pollHandler.voteOnPoll);
 	
 	// LOCAL REGISTRATION
 	app.get('/signup', function(req, res){

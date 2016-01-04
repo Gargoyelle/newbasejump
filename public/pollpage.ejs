@@ -49,16 +49,17 @@
       <div class='container-fluid poll'>
           <div class='row'>
               <div class='col-md-4 col-md-offset-2'>
-                  <h1 class='text-center pollname'><%= pollName%></h1>
-                  <h4 class='text-center'>by <%= userPoll %></h4>
+                  <h1 class='text-center pollname'><%= poll.name%></h1>
+                  <h4 class='text-center'>by <%= pollUser %></h4>
                 </div>
                 <div class='col-md-4'>
                   <form method='post' action='vote' class='col-sm-8 col-sm-offset-2'>
                       <div class="form-group">
-                        <% for (var i = 0; i < pollOptions.length; i++) {%>
+                          <input id='pollId' name='pollId' value='<%=poll._id%>'>
+                        <% for (var i = 0; i < poll.options.length; i++) {%>
                         <div class='radio'>
                             <label>
-                                <input type="radio" name="option" value="<%= pollOptions[i].option %>"><%= pollOptions[i].option %>
+                                <input type="radio" name="option" value="<%= poll.options[i].option %>"><%= poll.options[i].option %>
                             </label>
                         </div>
                         <% } %>

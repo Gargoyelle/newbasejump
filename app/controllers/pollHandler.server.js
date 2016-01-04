@@ -2,43 +2,60 @@
 
 
 var User = require('../models/users.js');
+var Poll = require('../models/polls.js');
 
 function pollHandler () {
     
-    function getUsername(req) {
-        if (req.user.local.username)
-            return {'local.username': req.user.local.username};
-            
-        else
-            return {'facebook.id': req.user.facebook.id};
-    }
-    
     this.addPoll = function(req, res) {
-        var user = getUsername(req);
+        var user = req.user._id;
         var options = req.body.options.filter(function(value) {
             return value !== '';
         }).map(function(value) {
             return {option: value, votes: 0}
         });
-        var pollUrl = req.body.pollname.replace(/\s/g, '%20');
-        var newPoll = {
-            pollName: req.body.pollname,
-            pollUrl: pollUrl,
-            options: options
-        };
-        req.app.locals.pollname = req.body.pollname;
-        User.findOneAndUpdate(user, {$push: {'polls': newPoll} }, {upsert: true})
-            .exec(function(err, result) {
-            if (err)
-                throw err;
-            res.redirect('/pollcreated');
-            });
+        var url = req.app.locals.url;
+        var pollUrl = req.body.pollname.replace(/\s|\W/gi, '');
+        var newPoll = new Poll({
+            name: req.body.pollname,
+            url: pollUrl,
+            options: options,
+            user: user
+        });
+        
+        newPoll.save(function(err, doc){
+			if (err)
+				throw err;
+			
+			req.flash('createdMessage', 'Your poll has been created! Check it out at <a href="' + url + (req.user.local.username?req.user.local.username:req.user.facebook.name) + '/' + pollUrl + '">' + url + (req.user.local.username?req.user.local.username:req.user.facebook.name) + '/' + pollUrl + '</a>');
+			res.redirect('/dashboard');
+		});
             
     };
+    
+    this.voteOnPoll = function(req, res) {
+        var pollId = req.body.pollId;
+        var option = req.body.option;
+        Poll.findById(pollId, function(err, poll) {
+            if (err)
+                throw err;
+            for (var i = 0; i < poll.options.length; i++) {
+                if (poll.options[i].option === option) {
+                    poll.options[i].votes++;
+                }
+            }
+            poll.save(function(err) {
+                if (err)
+                    throw err;
+            });
+            console.log(poll);
+            res.redirect('/mypolls');
+        })
+    }
+    
     this.deletePoll = function(req, res) {
-        var user = getUsername(req);
+        var user = req.user._id;
         var pollToDelete = req.body.pollToDelete;
-        User.findOneAndUpdate(user, {$pull: {'polls': {pollName: pollToDelete}}})
+        Poll.findOneAndRemove({'_id': pollToDelete})
             .exec(function(err, result) {
                 if (err)
                     throw err;
