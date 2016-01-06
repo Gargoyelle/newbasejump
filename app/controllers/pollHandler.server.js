@@ -35,20 +35,20 @@ function pollHandler () {
     this.voteOnPoll = function(req, res) {
         var pollId = req.body.pollId;
         var option = req.body.option;
-        Poll.findById(pollId, function(err, poll) {
+        Poll.findById(pollId).exec(function(err, poll) {
             if (err)
                 throw err;
             for (var i = 0; i < poll.options.length; i++) {
                 if (poll.options[i].option === option) {
                     poll.options[i].votes++;
+                    poll.markModified('options');
                 }
             }
             poll.save(function(err) {
                 if (err)
                     throw err;
             });
-            console.log(poll);
-            res.redirect('/mypolls');
+            res.redirect('/' + req.params.user + '/' + poll.url + '/results');
         })
     }
     

@@ -27,6 +27,7 @@ app.use(bodyParser.json());
 app.set('public', process.cwd() + '/public');
 app.set('view engine', 'ejs');
 app.use('/controllers', express.static(process.cwd() + '/app/controllers'));
+app.use('/common', express.static(process.cwd() + '/app/common'));
 app.locals.url = process.env.APP_URL;
 
 app.use(session({

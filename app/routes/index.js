@@ -27,7 +27,6 @@ module.exports = function (app, passport){
 	}
 	
 	function getPoll(req, res, next) {
-		var user = req.params.user;
         var poll = req.params.pollname;
         Poll.findOne({'url': poll}, function(err, poll) {
             if (err)
@@ -77,10 +76,12 @@ module.exports = function (app, passport){
 	app.route('/deletepoll')
 		.post(authenticatedOrNot, pollHandler.deletePoll);
 		
+	//POLL RESULTS
 	
+
 	//POLLS
 	
-	app.get('/:user/:pollname', getPoll, function(req, res) {
+	app.get('/:user/:pollname', getPoll, function(req, res, next) {
 		res.render(path + '/public/pollpage.ejs', {
 			user: req.user,
 			pollUser: req.params.user,
@@ -90,6 +91,16 @@ module.exports = function (app, passport){
 	
 	app.route('/:user/vote')
 		.post(pollHandler.voteOnPoll);
+	
+		
+	app.get('/:user/:pollname/:results', getPoll, function(req, res) {
+		res.render(path + '/public/pollresults.ejs', {
+			user: req.user,
+			pollUser: req.params.user,
+			poll: req.poll
+		})
+	})
+		
 	
 	// LOCAL REGISTRATION
 	app.get('/signup', function(req, res){
