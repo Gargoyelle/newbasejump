@@ -76,8 +76,6 @@ module.exports = function (app, passport){
 	app.route('/deletepoll')
 		.post(authenticatedOrNot, pollHandler.deletePoll);
 		
-	//POLL RESULTS
-	
 
 	//POLLS
 	
@@ -91,6 +89,9 @@ module.exports = function (app, passport){
 	
 	app.route('/:user/vote')
 		.post(pollHandler.voteOnPoll);
+		
+	app.route('/:user/addOption')
+		.post(pollHandler.addNewOption);
 	
 		
 	app.get('/:user/:pollname/:results', getPoll, function(req, res) {

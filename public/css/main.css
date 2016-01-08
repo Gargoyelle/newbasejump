@@ -95,3 +95,7 @@ li a {
 #pollId {
     display: none;
 }
+
+#options-add {
+    display: none;
+}

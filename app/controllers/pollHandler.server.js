@@ -7,6 +7,10 @@ var Poll = require('../models/polls.js');
 function pollHandler () {
     
     this.addPoll = function(req, res) {
+        if (req.body.options.length < 2 || !req.body.pollname) {
+            req.flash('createdMessage', 'Sorry, you need to enter a poll name and at least two options!');
+            res.redirect('/dashboard');
+        }
         var user = req.user._id;
         var options = req.body.options.filter(function(value) {
             return value !== '';
@@ -49,6 +53,35 @@ function pollHandler () {
                     throw err;
             });
             res.redirect('/' + req.params.user + '/' + poll.url + '/results');
+        })
+    }
+    
+    this.addNewOption = function(req, res) {
+        var pollId = req.body.pollId;
+        var options;
+        if (Array.isArray(req.body.options)) {
+            options = req.body.options.filter(function(value) {
+                return value !== '';
+            }).map(function(value) {
+                return {option: value, votes: 0}
+            });
+        } else if (req.body.options !== ''){
+            options = [{option: req.body.options, votes: 0}];
+        }
+        console.log(options);
+        Poll.findById(pollId).exec(function(err, poll) {
+            if (err)
+                throw err;
+            for (var i = 0; i < options.length; i++) {
+                poll.options.push(options[i]);
+                poll.markModified('options');
+            }
+            console.log(poll);
+            poll.save(function(err) {
+                if (err)
+                    throw err;
+            });
+            res.redirect('/' + req.params.user + '/' + poll.url);
         })
     }
     

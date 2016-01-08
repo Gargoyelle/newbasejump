@@ -48,11 +48,11 @@
         </div>
       <div class='container-fluid poll'>
           <div class='row'>
-              <div class='col-md-4 col-md-offset-2'>
+              <div class='col-md-3 col-md-offset-2'>
                   <h1 class='text-center pollname'><%= poll.name%></h1>
                   <h4 class='text-center'>by <%= pollUser %></h4>
                 </div>
-                <div class='col-md-4'>
+                <div class='col-md-3 col-sm-6'>
                   <form method='post' action='vote' class='col-sm-8 col-sm-offset-2'>
                       <div class="form-group">
                           <input id='pollId' name='pollId' value='<%=poll._id%>'>
@@ -67,8 +67,21 @@
                     <button type="submit" class="btn btn-default btn-success">Vote</button>
                   </form>
               </div>
+              <div class='col-md-3 col-sm-6'>
+                  <div class='btn btn-default btn-primary' id='options-show'>Add New Options</div>
+                  <form method='post' action='addOption' id='options-add'>
+                        <label for='addOption' class='text-center'>Add New Options</label>
+                        <input id='pollId' name='pollId' value='<%=poll._id%>'>
+                        <div id='options-list'>
+                            <input type="text" class="form-control" name="options" placeholder="New option" required>
+                        </div>
+                        <div class="btn btn-default" id="options-more">More Options</div>
+                        <button type="submit" class="btn btn-default btn-success">Add Options</button>
+                  </form>
+              </div>
           </div>
       </div>
+      <script type="text/javascript" src="../../controllers/optionController.client.js"></script>
 	</body>
 
 </html>
