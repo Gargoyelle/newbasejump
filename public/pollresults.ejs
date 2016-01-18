@@ -20,13 +20,15 @@
                 </div>
                 <ul class="nav navbar-nav navbar-right">
                     <li><p class='navbar-text'>Hello 
+                    <% if (user) { %>
                         <% if (user.local.username) { %>
                             <%=user.local.username%>
                         <% } else if (user.facebook.name){ %>
                             <%=user.facebook.name%>
-                        <% } else { %>
-                            stranger</p>
-                        <% }%>
+                        <% } %>
+                    <% } else { %>
+                        stranger</p>
+                    <% }%>
                     </li>
                     <li><a href='/settings'><span class='glyphicon glyphicon-cog'></span></a></li>
                     <li>
