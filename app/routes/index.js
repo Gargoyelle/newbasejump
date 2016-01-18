@@ -13,7 +13,7 @@ module.exports = function (app, passport){
 		if (req.isAuthenticated()){
 			return next();
 		} else {
-			res.redirect('/login.ejs');
+			res.redirect('/login');
 		}
 	}
 	
