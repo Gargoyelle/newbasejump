@@ -51,6 +51,15 @@ module.exports = function (app, passport){
 			}
 		});
 		
+		
+	// FB REGISTRATION
+	app.get('/auth/facebook&output=embed', passport.authenticate('facebook', {scope: 'email'}));
+	
+	app.get('/auth/facebook/callback', 
+		passport.authenticate('facebook', {
+			successRedirect: '/dashboard',
+			failureRedirect: 'index'
+		}));
 	
 	//DASHBOARD
 	app.get('/dashboard', authenticatedOrNot, function(req,res) {
@@ -94,7 +103,7 @@ module.exports = function (app, passport){
 		.post(pollHandler.addNewOption);
 	
 		
-	app.get('/:user/:pollname/:results', getPoll, function(req, res) {
+	app.get('/:user/:pollname/results', getPoll, function(req, res) {
 		res.render(path + '/public/pollresults.ejs', {
 			user: req.user,
 			pollUser: req.params.user,
@@ -114,14 +123,7 @@ module.exports = function (app, passport){
 		failureFlash: true
 	}));
 	
-	// FB REGISTRATION
-	app.get('/auth/facebook&output=embed', passport.authenticate('facebook', {scope: 'email'}));
 	
-	app.get('/auth/facebook/callback', 
-		passport.authenticate('facebook', {
-			successRedirect: '/dashboard',
-			failureRedirect: 'index'
-		}));
 		
 	//LOGIN
 	app.route('/login')
