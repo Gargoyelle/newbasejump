@@ -53,7 +53,7 @@ module.exports = function (app, passport){
 		
 		
 	// FB REGISTRATION
-	app.get('/auth/facebook&output=embed', passport.authenticate('facebook', {scope: 'email'}));
+	app.get('/auth/facebook', passport.authenticate('facebook', {scope: 'email'}));
 	
 	app.get('/auth/facebook/callback', 
 		passport.authenticate('facebook', {
