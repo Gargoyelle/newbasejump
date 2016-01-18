@@ -30,7 +30,7 @@ function pollHandler () {
 			if (err)
 				throw err;
 			
-			req.flash('createdMessage', 'Your poll has been created! Check it out at <a href="' + url + (req.user.local.username?req.user.local.username:req.user.facebook.name) + '/' + pollUrl + '">' + url + (req.user.local.username?req.user.local.username:req.user.facebook.name) + '/' + pollUrl + '</a>');
+			req.flash('createdMessage', 'Your poll has been created! Check it out at <a href="' + url + '/' + (req.user.local.username?req.user.local.username:req.user.facebook.name) + '/' + pollUrl + '">' + url + (req.user.local.username?req.user.local.username:req.user.facebook.name) + '/' + pollUrl + '</a>');
 			res.redirect('/dashboard');
 		});
             

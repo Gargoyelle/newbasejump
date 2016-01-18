@@ -40,7 +40,7 @@
       <div class='container-fluid'>
           <ul class='mypolls list-group'>
               <% polls.forEach(function(poll) { %>
-                  <li class='list-group-item'><a href='<%=url + (user.local.username?user.local.username:user.facebook.name) + '/' + poll.url %>'><%=poll.name%></a><a href='<%= url + (user.local.username?user.local.username:user.facebook.name) + '/' + poll.url + '/results' %> ' class='btn btn-success pull-right btn-results'>Results</a><button data-id='<%=poll._id%>' class='btn btn-danger pull-right btn-delete'>Delete</button></li>
+                  <li class='list-group-item'><a href='<%=url + '/' + (user.local.username?user.local.username:user.facebook.name) + '/' + poll.url %>'><%=poll.name%></a><a href='<%= url + (user.local.username?user.local.username:user.facebook.name) + '/' + poll.url + '/results' %> ' class='btn btn-success pull-right btn-results'>Results</a><button data-id='<%=poll._id%>' class='btn btn-danger pull-right btn-delete'>Delete</button></li>
               <% }); %>
           </ul>
         </div>
